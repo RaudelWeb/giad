@@ -137,11 +137,11 @@
         } else if (phase === "postBoot") {
             // Draw the current gif frame without rotation or extrusion
             if (gifFrames.length > 0 && gifFrames[currentFrameIndex].complete) {
-                var logoWidth = terminalWidth * 0.3;
+                var logoWidth = 130;
                 var logoHeight = gifFrames[currentFrameIndex].height * (logoWidth / gifFrames[currentFrameIndex].width);
                 var centerX = terminalWidth / 2;
                 var centerY = 20 + logoHeight / 2;
-                ctx.drawImage(gifFrames[currentFrameIndex], centerX - logoWidth / 2, centerY - logoHeight / 2, logoWidth, logoHeight);
+                ctx.drawImage(gifFrames[currentFrameIndex], centerX - logoWidth / 2, (centerY - logoHeight / 2) + Math.min( (window.innerHeight * 0.4), 200 ), logoWidth, logoHeight);
             }
 
             // Draw ACCESS TERMINAL button text
@@ -368,7 +368,7 @@
 
         document.addEventListener('keydown', function(e) {
             // In boot phase, any key triggers phase2
-            if (phase === "boot") {
+            if (phase === "boot" && bootIndex > 10) {
                 launchPhase2();
                 return;
             }
