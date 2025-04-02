@@ -87,6 +87,18 @@
     function launchPhase2() {
         if (phase === "postBoot") return;
         phase = "postBoot";
+        var cmdInput = document.getElementById('cmd');
+        if (!cmdInput) {
+            cmdInput = document.createElement('input');
+            cmdInput.id = 'cmd';
+            cmdInput.type = 'text';
+            // Hide the input offscreen so it doesn't disrupt layout
+            cmdInput.style.position = 'absolute';
+            cmdInput.style.opacity = '0';
+            cmdInput.style.pointerEvents = 'none';
+            document.body.appendChild(cmdInput);
+        }
+        cmdInput.focus();
         postBootEndTime = Date.now() + 90000; // 90 seconds countdown
     }
 
@@ -273,11 +285,17 @@
             }
         `;
 
+        let distortValue = 0.25;
+
+        if( window.innerWidth < window.innerHeight ) {
+            distortValue = 0.1
+        }
+
         // Create a shader material using the shaders
         var material = new THREE.ShaderMaterial({
             uniforms: {
                 tDiffuse: { value: terminalTexture },
-                distortion: { value: 0.25 },
+                distortion: { value: distortValue },
                 time: { value: 0.0 }
             },
             vertexShader: vertexShader,
