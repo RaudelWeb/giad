@@ -87,6 +87,10 @@
     function launchPhase2() {
         if (phase === "postBoot") return;
         phase = "postBoot";
+        postBootEndTime = Date.now() + 90000; // 90 seconds countdown
+
+        if( window.innerWidth > window.innerHeight ) return
+
         var cmdInput = document.getElementById('cmd');
         if (!cmdInput) {
             cmdInput = document.createElement('input');
@@ -99,7 +103,6 @@
             document.body.appendChild(cmdInput);
         }
         cmdInput.focus();
-        postBootEndTime = Date.now() + 90000; // 90 seconds countdown
     }
 
     function updateGifFrame() {
