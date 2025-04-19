@@ -1,0 +1,138 @@
+{
+  "canvas": {
+    "width": 800,
+    "height": 600
+  },
+  "crt": {
+    "curvature": 0.35,
+    "distortion": 0.35,
+    "rasterization": {
+      "intensity": 0.7,
+      "brightBoost": 0.3,
+      "scanlineIntensity": 0.3
+    },
+    "effects": {
+      "staticNoise": 0,
+      "flickering": 0.05,
+      "horizontalSync": 0.1,
+      "glowingLine": 0
+    },
+    "colors": {
+      "font": "#ffffff",
+      "background": "#000000",
+      "bezel": "#2A2520",
+      "chromaColor": 0.5
+    }
+  },
+  "gradient": {
+    "radiusMultiplier": 1,
+    "centerOffset": 0,
+    "startColor": {
+      "r": 100,
+      "g": 100,
+      "b": 100,
+      "a": 0.3
+    },
+    "endColor": {
+      "r": 50,
+      "g": 50,
+      "b": 50,
+      "a": 0.1
+    }
+  },
+  "terminal": {
+    "frameDelay": 80,
+    "totalFrames": 48,
+    "glitchSpeed": 50,
+    "phases": {
+      "bootDuration": 3000,
+      "postBootDuration": 90000
+    },
+    "bootSequence": [
+      {
+        "type": "line",
+        "content": "Starting MS-GOD..."
+      },
+      {
+        "type": "line",
+        "content": "Shinku is testing extended memory...done."
+      },
+      {
+        "type": "line",
+        "content": "Starting GIAD Terminal Protocol..."
+      },
+      {
+        "type": "block",
+        "content": [
+          "C:\\GIAD\\TERMINAL.EXE",
+          "God is a designer © All Rights Reserved.",
+          "1981 to 2049 / United States of America.",
+          "神はクリエイターである"
+        ]
+      },
+      {
+        "type": "line",
+        "content": "Department of Design and Aesthetics"
+      },
+      {
+        "type": "line",
+        "content": "創造に触発されて"
+      },
+      {
+        "type": "line",
+        "content": ""
+      },
+      {
+        "type": "block",
+        "content": [
+          "DOS        <DIR>     12.05.20       15:57",
+          "COMMAND    COM       94.05.31       6:22",
+          "GIAD20     2008      173.255.189.42 6:22",
+          "CONFIG     SYS       12.05.20       15:57",
+          "AUTOEXEC  BAT        12.05.20",
+          "5 File(s)             292864 bytes free",
+          "Memory size: 116432 bytes"
+        ]
+      },
+      {
+        "type": "line",
+        "content": "Free disk space: 1842 MB"
+      },
+      {
+        "type": "line",
+        "content": "GIAD<r> Terminal Protocol initiated."
+      },
+      {
+        "type": "line",
+        "content": "Press any key to continue..."
+      }
+    ]
+  },
+  "api": {
+    "endpoint": "https://giad-gpt-proxy.vercel.app/api/giad-gpt",
+    "defaultMessages": {
+      "giad": "GIAD™ IS NOT A BRAND. IT'S A PROPHECY.",
+      "god": "\"GOD IS A DESIGNER. THAT'S NOT A STATEMENT — IT'S A JOB TITLE.\""
+    }
+  },
+  "ui": {
+    "accessButton": {
+      "text": "ACCESS TERMINAL",
+      "url": "https://terminal.godisadesigner.com/",
+      "position": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "size": {
+        "width": 300,
+        "height": 50
+      }
+    },
+    "borderMargin": 40,
+    "borderRadius": 20
+  },
+  "debugging": {
+    "showGrid": false,
+    "fullConsoleLogging": false
+  }
+}
