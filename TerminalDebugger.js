@@ -36,9 +36,11 @@ const TerminalDebugger = {
         this.controllers.debugFolder = gui.addFolder('Debugging');
 
         // Toggle debug grid
-        this.controllers.debugFolder.add(this.app.config.debugging, 'showGrid')
+        this.controllers.debugFolder.add(TerminalConfig.debugging, 'showGrid')
             .name('Show Grid')
             .onChange(value => {
+                TerminalConfig.debugging.showGrid = value
+                console.log(value);
                 // Redraw terminal when toggled
                 this.app.renderer.drawTerminal();
             });

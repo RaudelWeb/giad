@@ -54,7 +54,8 @@ const TerminalController = {
         this.setupEventListeners();
 
         // Set up dat.GUI for settings
-        if (window.location.href.includes('dev_mode=true')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('dev_mode') === 'true') {
             this.setupDatGUI();
         }
 
