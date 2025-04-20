@@ -19,6 +19,10 @@ const TerminalRenderer = {
     logoImage: null,
     gifFrames: [],
 
+    get baseTerminalPadding() {
+        return Math.max( window.innerWidth * 0.05, TerminalConfig.ui.borderMargin + 60 )
+    },
+
     // Initialize the renderer
     init() {
         this.ensureOffscreenCanvas();
@@ -568,7 +572,7 @@ const TerminalRenderer = {
         this.setupTextStyle(isMobile);
 
         const now = Date.now();
-        const textMarginX = Math.floor(TerminalConfig.canvas.width * 0.05) + 50;
+        const textMarginX = this.baseTerminalPadding;
 
         // Draw appropriate phase content
         if (TerminalState.phase === "boot") {
@@ -638,7 +642,7 @@ const TerminalRenderer = {
             TerminalState.bootDisplayLines.slice(-maxVisibleLines) :
             TerminalState.bootDisplayLines;
 
-        const startY = 100;
+        const startY = this.baseTerminalPadding;
 
         // Draw boot sequence lines
         for (let i = 0; i < visibleLines.length; i++) {
@@ -664,7 +668,7 @@ const TerminalRenderer = {
         };
 
         if (giadLogoImage && giadLogoImage.complete) {
-            const padding = 100;
+            const padding = this.baseTerminalPadding;
             const aspectRatio = 1;
             const imageHeight = Math.max(175, window.innerWidth * 0.2);
             const imageWidth = imageHeight * aspectRatio;
