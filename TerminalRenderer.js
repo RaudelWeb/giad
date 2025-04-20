@@ -738,7 +738,7 @@ const TerminalRenderer = {
         // Draw underline
         const textMetrics = this.ctx.measureText(buttonText);
         const textX = TerminalConfig.canvas.width / 2 - textMetrics.width / 2;
-        const textY = buttonY + 4;
+        const textY = buttonY + (textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent);
 
         this.ctx.beginPath();
         this.ctx.moveTo(textX, textY);

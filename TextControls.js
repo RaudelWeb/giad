@@ -300,7 +300,7 @@ function updateTextStyleMethod() {
         // Draw countdown if needed
         if (TerminalState.bootPhaseEndTime > 0) {
             const remaining = Math.ceil((TerminalState.bootPhaseEndTime - now) / 1000);
-            const countdownY = TerminalConfig.canvas.height - 50;
+            const countdownY = TerminalConfig.canvas.height - textStyleConfig.text.lineHeight - TerminalConfig.ui.borderMargin - 20;
             this.ctx.textAlign = 'center';
             this.ctx.fillText(
                 "AUTO LOADING IN [ " + remaining + " ]",
