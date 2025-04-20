@@ -666,7 +666,7 @@ const TerminalRenderer = {
         if (giadLogoImage && giadLogoImage.complete) {
             const padding = 100;
             const aspectRatio = 1;
-            const imageHeight = 175;
+            const imageHeight = Math.max(175, window.innerWidth * 0.2);
             const imageWidth = imageHeight * aspectRatio;
 
             // Position in top right corner

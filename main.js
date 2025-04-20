@@ -1,4 +1,4 @@
-// Main script that initializes and runs the terminal
+import { initTextControls } from "./TextControls.js";
 
 // Wait for DOM to be loaded before initializing
 document.addEventListener('DOMContentLoaded', () => {
@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    initTextControls();
     // Initialize the terminal
     TerminalController.init();
 });

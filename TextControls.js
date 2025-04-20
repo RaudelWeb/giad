@@ -5,10 +5,18 @@ const textStyleConfig = {
         color: "#ffffff",      // Text color
         glowColor: "#fd501f",  // Text glow/shadow color
         glowIntensity: 10,     // Glow intensity (shadow blur)
-        lineHeight: 24,        // Line height for text
+        get lineHeight() {
+            if( window.innerWidth < window.innerHeight ) {
+                return 20;
+            } else {
+                return window.innerWidth * 0.02
+            }
+        },
         fontSize: {
-            desktop: 18,         // Font size for desktop
-            mobile: 20           // Font size for mobile
+            get desktop() {
+              return window.innerWidth * 0.02 + "px";
+            },
+            mobile: "20px"           // Font size for mobile
         },
         fontFamily: "IBM1971"  // Font family
     }
@@ -40,7 +48,7 @@ function updateTextStyleMethod() {
 
         // Apply font size based on device
         const fontSize = isMobile ? config.fontSize.mobile : config.fontSize.desktop;
-        this.ctx.font = `${fontSize}px ${config.fontFamily}`;
+        this.ctx.font = `${fontSize} ${config.fontFamily}`;
     };
 
     // Update lineHeight usage throughout the renderer
@@ -294,23 +302,10 @@ function extendConfigManager() {
     };
 }
 
-// Wait for DOM content to be loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Use a timeout to ensure the TerminalConfig is loaded
-    setTimeout(initTextControls, 500);
-});
 
 // Initialize everything
-function initTextControls() {
+export function initTextControls() {
     console.log("Initializing text controls...");
-
-    console.log(window.TerminalRenderer);
-    // Make sure we have required objects
-    if (!window.TerminalConfig || !window.TerminalRenderer) {
-        console.warn("Required objects not found, retrying in 1 second...");
-        setTimeout(initTextControls, 1000);
-        return;
-    }
 
     try {
         // Make sure text config exists
@@ -324,7 +319,7 @@ function initTextControls() {
             extendConfigManager();
         }
 
-        // Add the controls to the GUI when the controller is ready
+        // Add the controls to the GUI if controller is ready
         if (window.TerminalApp && window.TerminalApp.controller && window.TerminalApp.controller.gui) {
             console.log("Adding text controls to GUI...");
 
@@ -335,29 +330,13 @@ function initTextControls() {
             extendUpdateAllGuiValues(window.TerminalApp.controller);
 
             console.log("Text controls initialized successfully");
+            return true;
         } else {
-            console.log("TerminalApp controller or GUI not ready, waiting...");
-
-            // If TerminalApp is not ready, wait for it
-            const checkInterval = setInterval(() => {
-                if (window.TerminalApp &&
-                    window.TerminalApp.controller &&
-                    window.TerminalApp.controller.gui) {
-                    clearInterval(checkInterval);
-
-                    console.log("TerminalApp controller found, adding text controls...");
-
-                    // Add text controls to the GUI
-                    addTextControlsToGUI(window.TerminalApp.controller);
-
-                    // Extend updateAllGuiValues method
-                    extendUpdateAllGuiValues(window.TerminalApp.controller);
-
-                    console.log("Text controls initialized successfully");
-                }
-            }, 500);
+            console.log("TerminalApp controller or GUI not ready");
+            return false;
         }
     } catch (error) {
         console.error("Error initializing text controls:", error);
+        return false;
     }
 }
