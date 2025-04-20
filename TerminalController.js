@@ -5,19 +5,22 @@ const TerminalController = {
     initialResize: true,
 
     // Initialize the terminal
-    init() {
+    init( refresh = false ) {
+
+        if( refresh ) this.clear();
+
         // Initialize components
         TerminalState.init();
         TerminalRenderer.init();
-
-        // Create meshes after textures are loaded
-        TerminalRenderer.createMeshes();
 
         TerminalDebugger.init({
             config: TerminalConfig,
             state: TerminalState,
             renderer: TerminalRenderer
         });
+
+        // Create meshes after textures are loaded
+        TerminalRenderer.createMeshes();
 
         // Start the boot sequence
         TerminalState.runBootSequence();
@@ -55,12 +58,84 @@ const TerminalController = {
 
         // Set up dat.GUI for settings
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('dev_mode') === 'true') {
+        if (urlParams.get('dev_mode') === 'true' && !refresh) {
             this.setupDatGUI();
         }
 
         // Start animation loop
         this.animate();
+    },
+
+    clear() {
+        // 1. Reset all state in one go
+        Object.assign(TerminalState, {
+            bootIndex: 0,
+            bootDisplayLines: [],
+            bootPhaseEndTime: 0,
+            postBootEndTime: 0,
+            phase: "boot",
+            commandInput: "",
+            eggMessage: "",
+            terminalScrollOffset: 0,
+            startTime: Date.now(),
+            lastGlitchUpdate: Date.now()
+        });
+
+        // 2. Clear canvas contexts
+        const canvasWidth = TerminalConfig.canvas.width;
+        const canvasHeight = TerminalConfig.canvas.height;
+
+        [TerminalRenderer.ctx, TerminalRenderer.borderCtx].forEach(ctx => {
+            if (ctx) ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        });
+
+        // 3. Properly dispose Three.js resources
+        if (TerminalRenderer.scene) {
+            // Use forEach for cleaner code
+            TerminalRenderer.scene.children.slice().forEach(object => {
+                // Dispose geometry
+                if (object.geometry) object.geometry.dispose();
+
+                // Dispose material and textures
+                if (object.material) {
+                    // Handle materials array
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach(material => disposeMaterial(material));
+                    } else {
+                        disposeMaterial(object.material);
+                    }
+                }
+
+                // Remove from scene
+                TerminalRenderer.scene.remove(object);
+            });
+        }
+
+        // 4. Force texture updates
+        if (TerminalRenderer.terminalTexture) TerminalRenderer.terminalTexture.needsUpdate = true;
+        if (TerminalRenderer.borderTexture) TerminalRenderer.borderTexture.needsUpdate = true;
+
+        // Helper function to properly dispose material resources
+        function disposeMaterial(material) {
+            // Dispose any maps/textures
+            Object.keys(material).forEach(prop => {
+                if (!material[prop]) return;
+                if (material[prop].isTexture) material[prop].dispose();
+
+                // Also dispose any material uniforms that are textures
+                if (prop === 'uniforms') {
+                    Object.keys(material.uniforms).forEach(name => {
+                        const uniform = material.uniforms[name];
+                        if (uniform && uniform.value && uniform.value.isTexture) {
+                            uniform.value.dispose();
+                        }
+                    });
+                }
+            });
+
+            // Finally dispose the material itself
+            material.dispose();
+        }
     },
 
     refreshDatGUI() {
@@ -242,22 +317,41 @@ const TerminalController = {
 
     },
 
-    // Restart the terminal animation
-    restartTerminal() {
-        TerminalState.init();
-        TerminalState.runBootSequence();
+    resetTerminal() {
+        TerminalState.bootIndex = 0;
+        TerminalState.bootDisplayLines = [];
+        TerminalState.bootPhaseEndTime = 0;
+        TerminalState.postBootEndTime = 0;
+        TerminalState.phase = "boot";
+        TerminalState.commandInput = "";
+        TerminalState.eggMessage = "";
+        TerminalState.terminalScrollOffset = 0;
+        TerminalState.startTime = Date.now();
+        TerminalState.lastGlitchUpdate = Date.now();
+        TerminalState.currentGlitchY = 0;
+        TerminalState.showCursor = true;
+        TerminalState.cursorTimer = 0;
 
-        // Force redraw and texture update for both terminal and border
-        TerminalRenderer.drawTerminal();
-        TerminalRenderer.drawBorder();
+        // 2. Clear canvases without recreating them
+        if (TerminalRenderer.ctx) {
+            TerminalRenderer.ctx.clearRect(0, 0, TerminalConfig.canvas.width, TerminalConfig.canvas.height);
+        }
+        if (TerminalRenderer.borderCtx) {
+            TerminalRenderer.borderCtx.clearRect(0, 0, TerminalConfig.canvas.width, TerminalConfig.canvas.height);
+        }
 
-        // Explicitly update textures
+        // 3. Reset textures without recreating them
         if (TerminalRenderer.terminalTexture) {
             TerminalRenderer.terminalTexture.needsUpdate = true;
         }
         if (TerminalRenderer.borderTexture) {
             TerminalRenderer.borderTexture.needsUpdate = true;
         }
+    },
+
+    // Restart the terminal animation
+    restartTerminal() {
+        this.init(true);
     },
 
     // Animation loop

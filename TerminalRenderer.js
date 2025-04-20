@@ -39,19 +39,19 @@ const TerminalRenderer = {
             Object.defineProperties(this.offscreenCanvas, {
                 width: {
                     writable: true,
-                    value: 800
+                    value: window.innerWidth
                 },
                 height: {
                     writable: true,
-                    value: 600
+                    value: window.innerHeight
                 }
             });
             this.offscreenCanvas.style.display = 'none';
             document.body.appendChild(this.offscreenCanvas);
         } else {
             // Force dimensions if canvas exists
-            this.offscreenCanvas.width = 800;
-            this.offscreenCanvas.height = 600;
+            this.offscreenCanvas.width = window.innerWidth;
+            this.offscreenCanvas.height = window.innerHeight;
         }
 
         // Log to confirm dimensions are correct
@@ -65,8 +65,8 @@ const TerminalRenderer = {
         // Same for border canvas
         this.borderCanvas = document.getElementById('borderCanvas') || document.createElement('canvas');
         this.borderCanvas.id = 'borderCanvas';
-        this.borderCanvas.width = 800;
-        this.borderCanvas.height = 600;
+        this.borderCanvas.width = window.innerWidth;
+        this.borderCanvas.height = window.innerHeight;
         this.borderCanvas.style.display = 'none';
         if (!this.borderCanvas.parentElement) {
             document.body.appendChild(this.borderCanvas);
@@ -354,7 +354,7 @@ const TerminalRenderer = {
                 time: { value: 0.0 },
                 overlayOpacity: { value: isContent ? 0.15 : 0 },
                 /*virtualResolution: { value: new THREE.Vector2(TerminalConfig.canvas.width, TerminalConfig.canvas.height) },*/
-                virtualResolution: { value: new THREE.Vector2(800, 600) },
+                virtualResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
                 screenCurvature: { value: TerminalConfig.crt.curvature },
                 staticNoise: { value: isContent ? TerminalConfig.crt.effects.staticNoise : 0 },
                 flickering: { value: isContent ? TerminalConfig.crt.effects.flickering : 0 },
@@ -1063,5 +1063,6 @@ const TerminalRenderer = {
         ctx.restore();
     }
 }
+
 
 window.TerminalRenderer = TerminalRenderer;

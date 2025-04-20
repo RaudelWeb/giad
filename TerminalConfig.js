@@ -2,11 +2,11 @@
 // Base configuration structure
 let TerminalConfig = {
     // Canvas dimensions and properties
-    canvas: {
-        width: 800,
-        height: 600,
+    /*canvas: {
+        width: window.innerWidth,
+        height: window.innerHeight,
         get aspect() { return this.width / this.height; }
-    },
+    },*/
 
     // Visual settings for the CRT effect
     crt: {

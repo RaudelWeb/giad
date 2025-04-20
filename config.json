@@ -1,8 +1,4 @@
 {
-  "canvas": {
-    "width": 800,
-    "height": 600
-  },
   "crt": {
     "curvature": 0.35,
     "distortion": 0.35,

@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = 'hidden';
     document.body.style.backgroundColor = '#1A1A1A';
 
+    if( typeof TerminalConfig.canvas == 'undefined' ) {
+        TerminalConfig.canvas = {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            get aspect() { return this.width / this.height; }
+        }
+    }
+
     // Initialize the terminal
     TerminalController.init();
 });
