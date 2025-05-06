@@ -7,10 +7,12 @@ const TerminalController = {
     _ab_controller: new AbortController(),
 
     // Initialize the terminal
-    init( refresh = false ) {
+    init( refresh = false, restartUi = true ) {
 
         // Initialize components
-        TerminalState.init();
+        if( restartUi ) {
+            TerminalState.init();
+        }
         TerminalRenderer.init();
 
         TerminalDebugger.init({
@@ -245,20 +247,23 @@ const TerminalController = {
 
     },
 
-    clear() {
-        // 1. Reset all state in one go
-        Object.assign(TerminalState, {
-            bootIndex: 0,
-            bootDisplayLines: [],
-            bootPhaseEndTime: 0,
-            postBootEndTime: 0,
-            phase: "boot",
-            commandInput: "",
-            eggMessage: "",
-            terminalScrollOffset: 0,
-            startTime: Date.now(),
-            lastGlitchUpdate: Date.now()
-        });
+    clear(resetUi = true) {
+
+        if( resetUi ) {
+            // 1. Reset all state in one go
+            Object.assign(TerminalState, {
+                bootIndex: 0,
+                bootDisplayLines: [],
+                bootPhaseEndTime: 0,
+                postBootEndTime: 0,
+                phase: "boot",
+                commandInput: "",
+                eggMessage: "",
+                terminalScrollOffset: 0,
+                startTime: Date.now(),
+                lastGlitchUpdate: Date.now()
+            });
+        }
 
         // 2. Clear canvas contexts
         const canvasWidth = TerminalConfig.canvas.width;
@@ -322,12 +327,13 @@ const TerminalController = {
     },
 
     // Restart the terminal animation
-    restartTerminal() {
+    restartTerminal(resetUi = true) {
         this.clearEventListeners();
         this._ab_controller = new AbortController();
-        this.clear();
-        this.init();
+        this.clear(resetUi);
+        this.init(false, resetUi);
     },
+
 
     // Animation loop
     animate() {
@@ -431,18 +437,18 @@ const TerminalController = {
 
     // Perform resize operations
     doResize() {
-        // Ensure canvas exists and is properly sized
         TerminalRenderer.ensureOffscreenCanvas();
 
-        // Update renderer pixel ratio and size
+        // Update renderer’s pixel ratio and dimensions
         TerminalRenderer.renderer.setPixelRatio(window.devicePixelRatio || 1);
         TerminalRenderer.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        // Update rendering
+        // Notify renderer of window resize (e.g., adjust camera, etc.):
         TerminalRenderer.onWindowResize();
 
-        // Force render a frame
+        // Render a frame to confirm visuals are updated
         TerminalRenderer.renderer.render(TerminalRenderer.scene, TerminalRenderer.camera);
+
     },
 
     // Handle click events

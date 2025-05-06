@@ -499,7 +499,7 @@ const TerminalRenderer = {
 
     // Handle window resize
     onWindowResize() {
-        TerminalController.restartTerminal()
+        TerminalController.restartTerminal(false)
     },
 
     // Drawing functions
