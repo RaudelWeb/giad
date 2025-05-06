@@ -447,6 +447,7 @@ const TerminalController = {
 
     // Handle click events
     handleClick(e) {
+
         // Calculate click position relative to window
         const windowX = e.clientX;
         const windowY = e.clientY;
@@ -490,6 +491,26 @@ const TerminalController = {
 
                 // Navigate to configured URL
                 window.location.href = buttonConfig.url;
+            }
+            else if (TerminalState.phase === 'postBoot') {
+                // Check if it's likely a mobile device (portrait orientation)
+                if (window.innerWidth < window.innerHeight) {
+                    let cmdInput = document.getElementById('cmd');
+
+                    // If input doesn't exist, create it
+                    if (!cmdInput) {
+                        cmdInput = document.createElement('input');
+                        cmdInput.id = 'cmd';
+                        cmdInput.type = 'text';
+                        cmdInput.style.position = 'absolute';
+                        cmdInput.style.opacity = '0';          // Keep input invisible
+                        cmdInput.style.pointerEvents = 'none'; // Avoid interfering with clicks
+                        document.body.appendChild(cmdInput);
+                    }
+
+                    // Focus to trigger the keyboard
+                    cmdInput.focus();
+                }
             }
         }
     },
