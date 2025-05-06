@@ -69,13 +69,15 @@ function updateTextStyleMethod() {
         this.ctx.textBaseline = 'middle';
     };
 
+
+
     // Enhanced wrapText method with improved mobile support
     TerminalRenderer.wrapText = function(text, maxWidth) {
         // Check if we're on mobile
         const isMobile = window.innerWidth < window.innerHeight;
 
         // For mobile, use more aggressive wrapping with smaller max width
-        const effectiveMaxWidth = isMobile ? maxWidth * 0.85 : maxWidth;
+        const effectiveMaxWidth = isMobile ? maxWidth * 0.95 : maxWidth;
 
         // Calculate a reasonable character limit for mobile
         const avgCharWidth = this.ctx.measureText('m').width; // Use 'm' as average char width
@@ -264,7 +266,11 @@ function updateTextStyleMethod() {
             : TerminalConfig.text.lineHeight;
 
         // Calculate starting position with enough space for the logo
-        const startY = 120; // Increase this value to move text lower if needed
+        let startY = 120; // Increase this value to move text lower if needed
+
+        if( window.innerWidth < window.innerHeight ) {
+            startY = startY + TerminalRenderer.giadStillLogoImage.height;
+        }
 
         // Calculate available vertical space
         const availableHeight = TerminalConfig.canvas.height - startY - 50; // leave room at bottom
@@ -276,7 +282,7 @@ function updateTextStyleMethod() {
             : TerminalState.bootDisplayLines;
 
         // Log for debugging
-        console.log(`Rendering ${visibleLines.length} boot lines with height ${lineHeight}`);
+        //console.log(`Rendering ${visibleLines.length} boot lines with height ${lineHeight}`);
 
         // Draw each line with careful positioning
         for (let i = 0; i < visibleLines.length; i++) {

@@ -1,6 +1,6 @@
 {
   "crt": {
-    "curvature": 0.35,
+    "curvature": 0.25,
     "distortion": 0.35,
     "rasterization": {
       "intensity": 0.7,
@@ -124,7 +124,7 @@
         "height": 50
       }
     },
-    "borderMargin": 40,
+    "borderMargin": 25,
     "borderRadius": 20
   },
   "debugging": {

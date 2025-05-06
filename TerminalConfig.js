@@ -11,7 +11,7 @@ let TerminalConfig = {
     // Visual settings for the CRT effect
     crt: {
         // Curve and distortion
-        curvature: 0.35,
+        curvature: 0.25,
         distortion: 0.35,
 
         // Scanline and rasterization
@@ -121,7 +121,7 @@ let TerminalConfig = {
                 height: 50
             }
         },
-        borderMargin: 40,
+        borderMargin: 25,
         borderRadius: 20
     },
 

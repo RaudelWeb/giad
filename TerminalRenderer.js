@@ -19,7 +19,12 @@ const TerminalRenderer = {
     logoImage: null,
     gifFrames: [],
 
+    giadStillLogoImage: null,
+
     get baseTerminalPadding() {
+        if( window.innerWidth < window.innerHeight ) {
+            return 80;
+        }
         return Math.max( window.innerWidth * 0.05, TerminalConfig.ui.borderMargin + 60 )
     },
 
@@ -642,7 +647,11 @@ const TerminalRenderer = {
             TerminalState.bootDisplayLines.slice(-maxVisibleLines) :
             TerminalState.bootDisplayLines;
 
-        const startY = this.baseTerminalPadding;
+        let startY = this.baseTerminalPadding;
+
+        if( window.innerWidth < window.innerHeight ) {
+            startY = startY + TerminalRenderer.giadStillLogoImage.height;
+        }
 
         // Draw boot sequence lines
         for (let i = 0; i < visibleLines.length; i++) {
@@ -661,23 +670,33 @@ const TerminalRenderer = {
 
     // Draw GIAD logo
     drawGiadLogo() {
-        const giadLogoImage = new Image();
-        giadLogoImage.src = 'GIAD-AestheticPreserver_Pixelated.png';
-        giadLogoImage.onerror = function() {
-            console.error('Failed to load GIAD logo image');
-        };
 
-        if (giadLogoImage && giadLogoImage.complete) {
+        if( ! this.giadStillLogoImage ) {
+            this.giadStillLogoImage = new Image();
+            this.giadStillLogoImage.src = 'GIAD-AestheticPreserver_Pixelated.png';
+            this.giadStillLogoImage.onerror = function() {
+                console.error('Failed to load GIAD logo image');
+            };
+        }
+
+        if (this.giadStillLogoImage && this.giadStillLogoImage.complete) {
             const padding = this.baseTerminalPadding;
             const aspectRatio = 1;
             const imageHeight = Math.max(175, window.innerWidth * 0.2);
+            this.giadStillLogoImage.height = imageHeight;
             const imageWidth = imageHeight * aspectRatio;
 
-            // Position in top right corner
-            const imageX = TerminalConfig.canvas.width - imageWidth - padding;
-            const imageY = padding;
+            let imageX, imageY;
+            if( window.innerWidth < window.innerHeight ) {
+                imageX = TerminalConfig.canvas.width / 2 - imageWidth / 2;
+                imageY = padding
+            } else {
+                // Position in top right corner
+                imageX = TerminalConfig.canvas.width - imageWidth - padding;
+                imageY = padding;
+            }
 
-            this.ctx.drawImage(giadLogoImage, imageX, imageY, imageWidth, imageHeight);
+            this.ctx.drawImage(this.giadStillLogoImage, imageX, imageY, imageWidth, imageHeight);
         }
     },
 
