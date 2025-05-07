@@ -480,7 +480,7 @@ const TerminalController = {
             const buttonConfig = TerminalConfig.ui.accessButton;
             const btnCenterX = TerminalConfig.canvas.width * buttonConfig.position.x;
             //const btnCenterY = TerminalConfig.canvas.height * buttonConfig.position.y;
-            const btnCenterY = buttonConfig.position.y;
+            const btnCenterY = 200;
             const btnWidth = buttonConfig.size.width;
             const btnHeight = buttonConfig.size.height;
 
