@@ -117,7 +117,7 @@ const TerminalRenderer = {
             window.innerHeight / 2, window.innerHeight / -2,
             -1000, 1000
         );
-        this.camera.position.z = 1;
+        this.camera.position.z = 1.1;
 
         // Create scene
         this.scene = new THREE.Scene();

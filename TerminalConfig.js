@@ -121,7 +121,7 @@ let TerminalConfig = {
                 height: 50
             }
         },
-        borderMargin: 25,
+        borderMargin: 40,
         borderRadius: 20
     },
 
