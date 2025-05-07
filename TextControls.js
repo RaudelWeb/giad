@@ -198,60 +198,91 @@ function updateTextStyleMethod() {
         }
 
         this.ctx.textAlign = 'left';
-        const maxWidth = TerminalConfig.canvas.width - (textMarginX * 2);
+        const maxWidth = TerminalConfig.canvas.width - textMarginX * 2;
         const prompt = "C:\\GIAD> ";
 
-        // Calculate available space for text
+        // Calculate space for text
         const interfaceBottom = TerminalConfig.canvas.height * (isMobile ? 0.55 : 0.65) + 20;
         const availableSpace = commandPromptY - interfaceBottom;
         const availableLines = Math.floor(availableSpace / lineHeight);
 
-        // Handle egg message if it exists
+        // If there's an eggMessage, manually wrap it and apply scrolling
         if (TerminalState.eggMessage !== "") {
-            // Use enhanced wrapping for better mobile support
-            const lines = this.wrapText(TerminalState.eggMessage, maxWidth);
+            const rawEggText = TerminalState.eggMessage;
+            const eggLines = [];
+            let eggCurrentLine = '';
 
-            // Apply scroll offset (but don't scroll beyond available content)
-            const maxScroll = Math.max(0, lines.length - availableLines);
+            // Simple character-based wrapping for the egg message
+            for (let i = 0; i < rawEggText.length; i++) {
+                const testLine = eggCurrentLine + rawEggText[i];
+                const testWidth = this.ctx.measureText(testLine).width;
+                if (testWidth > maxWidth && eggCurrentLine !== '') {
+                    eggLines.push(eggCurrentLine);
+                    eggCurrentLine = rawEggText[i];
+                } else {
+                    eggCurrentLine = testLine;
+                }
+            }
+            if (eggCurrentLine) {
+                eggLines.push(eggCurrentLine);
+            }
+
+            // Scroll logic remains the same
+            const maxScroll = Math.max(0, eggLines.length - availableLines);
             const effectiveScrollOffset = Math.min(TerminalState.terminalScrollOffset, maxScroll);
 
-            // If offset is valid, show appropriate portion of content
-            if (lines.length > availableLines) {
-                // Show scrolled view of lines
+            if (eggLines.length > availableLines) {
                 const startLine = effectiveScrollOffset;
-                const endLine = Math.min(startLine + availableLines, lines.length);
-                const visibleLines = lines.slice(startLine, endLine);
+                const endLine = Math.min(startLine + availableLines, eggLines.length);
+                const visibleLines = eggLines.slice(startLine, endLine);
 
-                // Draw visible lines
                 for (let i = 0; i < visibleLines.length; i++) {
-                    const lineY = interfaceBottom + (i * lineHeight);
+                    const lineY = interfaceBottom + i * lineHeight;
                     this.ctx.fillText(visibleLines[i], textMarginX, lineY);
                 }
 
+                // Show "↓ more" notice if there's more text that is scrolled off
                 if (effectiveScrollOffset < maxScroll) {
                     this.ctx.textAlign = 'right';
                     this.ctx.fillText("↓ more", TerminalConfig.canvas.width - textMarginX, commandPromptY - 10);
                     this.ctx.textAlign = 'left';
                 }
             } else {
-                // If all content fits, just show it all
-                for (let i = 0; i < lines.length; i++) {
-                    const lineY = interfaceBottom + (i * lineHeight);
-                    this.ctx.fillText(lines[i], textMarginX, lineY);
+                // Fits entirely
+                for (let i = 0; i < eggLines.length; i++) {
+                    const lineY = interfaceBottom + i * lineHeight;
+                    this.ctx.fillText(eggLines[i], textMarginX, lineY);
                 }
             }
         }
 
-        // Always draw command prompt at the specified Y position
-        const promptY = isMobile ?
-            commandPromptY - 5 : // Adjust for mobile to prevent overlap
-            commandPromptY;
+        // Draw the multiline command prompt at the bottom
+        const promptY = isMobile ? commandPromptY - 5 : commandPromptY;
+        const rawCommandLine = prompt + TerminalState.commandInput + (TerminalState.showCursor ? "_" : "");
 
-        this.ctx.fillText(
-            prompt + TerminalState.commandInput + (TerminalState.showCursor ? "_" : ""),
-            textMarginX,
-            promptY
-        );
+        const promptLines = [];
+        let currentLine = '';
+
+        for (let i = 0; i < rawCommandLine.length; i++) {
+            const testLine = currentLine + rawCommandLine[i];
+            const testWidth = this.ctx.measureText(testLine).width;
+            if (testWidth > maxWidth && currentLine !== '') {
+                promptLines.push(currentLine);
+                currentLine = rawCommandLine[i];
+            } else {
+                currentLine = testLine;
+            }
+        }
+        if (currentLine) {
+            promptLines.push(currentLine);
+        }
+
+        // Draw each wrapped line so the last line is at promptY
+        for (let i = 0; i < promptLines.length; i++) {
+            const offset = promptLines.length - 1 - i;
+            const lineY = promptY - (offset * lineHeight);
+            this.ctx.fillText(promptLines[i], textMarginX, lineY);
+        }
     };
 
     // Also update bootPhase drawing to use the configured line height

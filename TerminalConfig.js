@@ -114,7 +114,7 @@ let TerminalConfig = {
             url: "https://terminal.godisadesigner.com/",
             position: {
                 x: 0.5, // center horizontally (percentage of width)
-                y: 0.55  // position vertically (percentage of height)
+                y: 200  // position vertically (percentage of height)
             },
             size: {
                 width: 300,

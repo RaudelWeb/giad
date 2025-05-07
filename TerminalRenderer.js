@@ -739,7 +739,8 @@ const TerminalRenderer = {
             this.ctx.drawImage(
                 this.gifFrames[TerminalState.currentFrameIndex],
                 centerX - logoWidth / 2,
-                centerY - logoHeight,
+                //centerY - logoHeight,
+                100,
                 logoWidth,
                 logoHeight);
         }
@@ -750,7 +751,10 @@ const TerminalRenderer = {
         // Draw ACCESS TERMINAL button
         this.ctx.textAlign = 'center';
         const buttonText = TerminalConfig.ui.accessButton.text;
-        const buttonY = TerminalConfig.canvas.height * TerminalConfig.ui.accessButton.position.y;
+        let buttonY = TerminalConfig.canvas.height * TerminalConfig.ui.accessButton.position.y;
+        if( window.innerWidth < window.innerHeight ) {
+            buttonY = 200;
+        }
 
         this.ctx.fillText(buttonText, TerminalConfig.canvas.width / 2, buttonY);
 
